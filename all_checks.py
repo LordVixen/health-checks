@@ -2,7 +2,7 @@
 
 import os
 import sys
-
+import socket
 (...)
 
 def check_reboot():
@@ -24,8 +24,17 @@ def check_root_full():
     """Returns True if the root partition is full, False otherwise."""
     return check_disk_full(disk="/", min_gb=2,min_percent=10)
 
+
+def check_no_internet():
+    """Returns True if it fails to resolve Google's URL, False Otherwise."""
+    try:
+        socket.gethostbyname("www.google.com")
+        return False
+    except:
+        return True
+
 def main(): 
-    checks = [(check_reboot, "Pending reboot"),(check_root_full, "Root Partition is full"),]
+    checks = [(check_reboot, "Pending reboot"),(check_root_full, "Root Partition is full"),(check_no_internet,"No working internet")]
     for check,msg in checks:
      if check():
       print(msg)
